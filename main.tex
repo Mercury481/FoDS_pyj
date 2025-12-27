@@ -90,9 +90,15 @@ MNIST 数据集的构建旨在模拟真实的分类任务场景。该数据集�
 
 \subsection{推导目标}
 
-我们要证明期望超额风险满足：$$\mathbb{E}_{\mathbb{D}}\left[\mathcal{E}\left(f_{\mathcal{A}(\tau)}\right)\right] \lesssim O(n^{-\text{rate}})$$并指明这个 rate（即老师所说的 $\alpha$）是如何计算出来的。
+我们要证明期望超额风险满足：
+\begin{equation}
+\mathbb{E}_{\mathbb{D}}\left[\mathcal{E}\left(f_{\mathcal{A}(\tau)}\right)\right] \lesssim O(n^{-\text{rate}})
+\end{equation}
+并指明这个 rate（即老师所说的 $\alpha$）是如何计算出来的。
 \subsection{第一步：误差分解 }
-根据《FoDS\_25》 Page 5，对于训练集 $\mathbb{D}$ 大小为 $n$ 的学习算法，其超额风险可以分解为三部分：$$\mathbb{E}[\mathcal{E}(\hat{f})] \le 2 \underbrace{\mathbb{E}[\sup_{f \in \mathcal{F}} |L(f) - \hat{L}(f)|]}_{\text{估计误差 (Estimation Error)}} + \underbrace{\inf_{f \in \mathcal{F}} (L(f) - L(f^*))}_{\text{近似误差 (Approximation Error)}} + \underbrace{\text{Opt}}_{\text{优化误差}}$$
+根据《FoDS\_25》 Page 5，对于训练集 $\mathbb{D}$ 大小为 $n$ 的学习算法，其超额风险可以分解为三部分：
+\begin{equation}
+\mathbb{E}[\mathcal{E}(\hat{f})] \le 2 \underbrace{\mathbb{E}[\sup_{f \in \mathcal{F}} |L(f) - \hat{L}(f)|]}_{\text{估计误差 (Estimation Error)}} + \underbrace{\inf_{f \in \mathcal{F}} (L(f) - L(f^*))}_{\text{近似误差 (Approximation Error)}} + \underbrace{\text{Opt}}_{\text{优化误差}}\end{equation}
 \begin{itemize}
     \item 假设优化误差为 0（即假设我们能求得当前假设空间内的最优解）。
     \item 我们的目标是找到一个假设空间 $\mathcal{F}$（通常由分辨率参数 $\epsilon$ 控制），使得前两项之和最小。
@@ -102,7 +108,7 @@ MNIST 数据集的构建旨在模拟真实的分类任务场景。该数据集�
 
 近似误差（即偏差）来源于模型假设空间 $\mathcal{F}$ 不足以完美表达真实的目标函数 $f^*$。根据《FoDS\_25》 Page 48 的设定，假设目标函数属于 Hölder 类 $H^\beta([0,1]^d)$，即函数的平滑度为 $\beta$（意味着函数通过 $\beta$ 阶导数有界），数据维度为 $d$ 。
 
-如果我们使用网格大小（或分辨率）为 $\epsilon$ 的函数类来逼近 $f^*$，根据泰勒展开或多项式逼近理论，逼近误差的上界与分辨率的 $\beta$ 次方成正比：$$\text{App Error} \le C_1 \cdot \epsilon^\beta$$
+如果我们使用网格大小（或分辨率）为 $\epsilon$ 的函数类来逼近 $f^*$，根据泰勒展开或多项式逼近理论，逼近误差的上界与分辨率的 $\beta$ 次方成正比：\begin{equation}\text{App Error} \le C_1 \cdot \epsilon^\beta\end{equation}
 \begin{itemize}
     \item 物理含义：网格越密（$\epsilon$ 越小），逼近越准，偏差越小。
 \end{itemize}
@@ -111,18 +117,21 @@ MNIST 数据集的构建旨在模拟真实的分类任务场景。该数据集�
 
 估计误差（即方差）来源于样本量有限。根据统计学习理论，估计误差的上界由假设空间的复杂度（覆盖数/熵）和样本量 $n$ 决定。
 
-1、覆盖数：根据《FoDS\_25》 Page 48，对于平滑度为 $\beta$、维度为 $d$ 的函数类，其对数覆盖数为 ：$$\log \mathcal{N}(\epsilon) \asymp \epsilon^{-d/\beta}$$(注：文档中用 $\alpha$ 表示平滑度，此处为避免混淆，暂用 $\beta$ 表示平滑度，对应文档中的 $\alpha$)。
+1、覆盖数：根据《FoDS\_25》 Page 48，对于平滑度为 $\beta$、维度为 $d$ 的函数类，其对数覆盖数为 ：\begin{equation}\log \mathcal{N}(\epsilon) \asymp \epsilon^{-d/\beta}\end{equation}(注：文档中用 $\alpha$ 表示平滑度，此处为避免混淆，暂用 $\beta$ 表示平滑度，对应文档中的 $\alpha$)。
 
-2、误差上界：对于多分类问题或有界损失函数，估计误差通常由 Dudley 积分或链式法则给出，其量级为：$$\text{Est Error} \lesssim \sqrt{\frac{\log \mathcal{N}(\epsilon)}{n}} \asymp \sqrt{\frac{\epsilon^{-d/\beta}}{n}}$$(注：对于某些损失函数如平方损失，或者是满足 Tsybakov 噪声条件的分类，该项可能是 $\frac{\log \mathcal{N}}{n}$ 而不是根号，这会改变最终系数，但推导逻辑一致。这里采用最通用的根号形式)。
+2、误差上界：对于多分类问题或有界损失函数，估计误差通常由 Dudley 积分或链式法则给出，其量级为：\begin{equation}\text{Est Error} \lesssim \sqrt{\frac{\log \mathcal{N}(\epsilon)}{n}} \asymp \sqrt{\frac{\epsilon^{-d/\beta}}{n}}\end{equation}(注：对于某些损失函数如平方损失，或者是满足 Tsybakov 噪声条件的分类，该项可能是 $\frac{\log \mathcal{N}}{n}$ 而不是根号，这会改变最终系数，但推导逻辑一致。这里采用最通用的根号形式)。
 \begin{itemize}
     \item 物理含义：网格越密（$\epsilon$ 越小），模型越复杂（$\epsilon^{-d/\beta}$ 变大），方差越大；数据量 $n$ 越大，方差越小。
 \end{itemize}
 
 \subsection{偏差-方差权衡}
 
-现在的总误差上界是 $\epsilon$ 的函数：$$\text{Total Error}(\epsilon) \lesssim \underbrace{\epsilon^\beta}_{\text{Bias}} + \underbrace{\sqrt{\frac{\epsilon^{-d/\beta}}{n}}}_{\text{Variance}}$$为了得到最紧的上界（即最小的误差），我们需要选择最佳的 $\epsilon^*$，使这两项在数量级上平衡：$$\epsilon^\beta \asymp \sqrt{\frac{\epsilon^{-d/\beta}}{n}}$$两边平方：$$\epsilon^{2\beta} \asymp \frac{\epsilon^{-d/\beta}}{n}$$移项整理：$$\epsilon^{2\beta} \cdot \epsilon^{d/\beta} \asymp \frac{1}{n}$$$$\epsilon^{\frac{2\beta^2 + d}{\beta}} \asymp n^{-1}$$解出最佳分辨率 $\epsilon^*$：$$\epsilon^* \asymp n^{-\frac{\beta}{2\beta + d}}$$
+现在的总误差上界是 $\epsilon$ 的函数：\begin{equation}\text{Total Error}(\epsilon) \lesssim \underbrace{\epsilon^\beta}_{\text{Bias}} + \underbrace{\sqrt{\frac{\epsilon^{-d/\beta}}{n}}}_{\text{Variance}}\end{equation}为了得到最紧的上界（即最小的误差），我们需要选择最佳的 $\epsilon^*$，使这两项在数量级上平衡：\begin{equation}\epsilon^\beta \asymp \sqrt{\frac{\epsilon^{-d/\beta}}{n}}\end{equation}两边平方：\begin{equation}\epsilon^{2\beta} \asymp \frac{\epsilon^{-d/\beta}}{n}\end{equation}移项整理：\begin{equation}\epsilon^{2\beta} \cdot \epsilon^{d/\beta} \asymp \frac{1}{n}\end{equation}\begin{equation}\epsilon^{\frac{2\beta^2 + d}{\beta}} \asymp n^{-1}\end{equation}解出最佳分辨率 $\epsilon^*$：\begin{equation}\epsilon^* \asymp n^{-\frac{\beta}{2\beta + d}}\end{equation}
 \subsection{得到最终误差上界}
-将最佳 $\epsilon^*$ 代回总误差公式（由平衡条件可知，两项同阶，只需计算一项）：$$\text{Total Error} \asymp (\epsilon^*)^\beta \asymp \left( n^{-\frac{\beta}{2\beta + d}} \right)^\beta = n^{-\frac{\beta^2}{2\beta + d}}$$(注：如果根据文档 《FoDS\_25》  48 针对平方损失的推导，估计误差项是 $\frac{\epsilon^{-d/\beta}}{n}$ 而没有根号，那么平衡方程变为 $\epsilon^\beta \asymp \frac{\epsilon^{-d/\beta}}{n}$，解得 $\epsilon \asymp n^{-\frac{\beta}{2\beta+d}}$，最终误差为 $n^{-\frac{2\beta}{2\beta+d}}$。文档 《FoDS\_25》  48 明确给出的结果是 $O(n^{-\frac{2\alpha}{2\alpha+d}})$ 4)。无论具体是哪种损失函数的假设，最终形式都是幂律分布：$$\mathbb{E}_{\mathbb{D}}\left[\mathcal{E}\right] \lesssim O(n^{-\text{rate}})$$
+将最佳 $\epsilon^*$ 代回总误差公式（由平衡条件可知，两项同阶，只需计算一项）：\begin{equation}\text{Total Error} \asymp (\epsilon^*)^\beta \asymp \left( n^{-\frac{\beta}{2\beta + d}} \right)^\beta = n^{-\frac{\beta^2}{2\beta + d}}\end{equation}(注：如果根据文档 《FoDS\_25》  48 针对平方损失的推导，估计误差项是 $\frac{\epsilon^{-d/\beta}}{n}$ 而没有根号，那么平衡方程变为 $\epsilon^\beta \asymp \frac{\epsilon^{-d/\beta}}{n}$，解得 $\epsilon \asymp n^{-\frac{\beta}{2\beta+d}}$，最终误差为 $n^{-\frac{2\beta}{2\beta+d}}$。文档 《FoDS\_25》  48 明确给出的结果是 $O(n^{-\frac{2\alpha}{2\alpha+d}})$ 4)。无论具体是哪种损失函数的假设，最终形式都是幂律分布：
+\begin{equation}
+\mathbb{E}_{\mathbb{D}}\left[\mathcal{E}\right] \lesssim O(n^{-\text{rate}})
+\end{equation}
 
 \subsection{该证明过程依赖的假设}
 
@@ -159,7 +168,7 @@ MNIST 数据集的构建旨在模拟真实的分类任务场景。该数据集�
 \end{itemize}
 5. 噪声/边界条件假设 —— 针对分类问题虽然《FoDS\_25》 第 48 页主要以回归（最小二乘）为例，但在分类问题中要达到 $O(n^{-\alpha})$ 这种形式的快速率，通常还需要：
 \begin{itemize}
-    \item Tsybakov 噪声条件 (Tsybakov Noise Condition)：假设在决策边界附近，类别概率 $P(Y=1|X)$ 既然不等于 0.5，也不会无限逼近 0.5（或者逼近的速度受控）。
+    \item Tsybakov 噪声条件：假设在决策边界附近，类别概率 $P(Y=1|X)$ 既然不等于 0.5，也不会无限逼近 0.5（或者逼近的速度受控）。
     \begin{itemize}
     \item 《FoDS\_25》 第 74 页提到了 $\sigma_s, \sigma_t$ 等参数以及与之相关的误差界，这通常对应于迁移学习或分类任务中的边界条件假设。如果没有这个假设，分类问题的误差界通常只能达到 $O(n^{-1/2})$ 甚至更慢，而无法达到与平滑度 $\alpha$ 相关的更快得多的速率。
     \end{itemize}
@@ -244,6 +253,83 @@ MNIST 数据集的构建旨在模拟真实的分类任务场景。该数据集�
     \end{tabular}
 \end{table}
 
+\subsection{损失函数与经验风险最小化}
+
+\subsubsection{交叉熵损失函数}
+
+在前述的理论推导中，我们讨论了在假设空间 $\mathcal{F}$ 中寻找最优函数 $f^*$ 以最小化期望风险。在具体的分类任务实现中，为了衡量模型输出分布与真实标签分布之间的差异，本项目选用了交叉熵损失函数。
+
+设输入样本为 $x$，真实标签为 $y$（采用 One-hot 编码，即 $y \in \{0,1\}^K$，其中 $K=10$），模型输出的未归一化 Logits 为 $z = f_\theta(x)$。首先通过 Softmax 函数将输出映射为概率分布 $\hat{y}$：
+\begin{equation}
+    \hat{y}_k = \text{Softmax}(z)_k = \frac{e^{z_k}}{\sum_{j=1}^K e^{z_j}}
+\end{equation}
+在此基础上，单样本的交叉熵损失定义为：
+\begin{equation}
+    L(\hat{y}, y) = - \sum_{k=1}^K y_k \log(\hat{y}_k)
+\end{equation}
+由于 MNIST 数据集的标签是稀疏的（仅目标类别 $c$ 处 $y_c=1$，其余为 0），该损失函数简化为负对数似然：
+\begin{equation}
+    L(\hat{y}, y) = - \log(\hat{y}_c)
+\end{equation}
+相较于均方误差（MSE），交叉熵损失函数在分类问题中具有更优的梯度特性。当模型预测错误时，$-\log(\hat{y}_c)$ 的梯度较大，能够加速收敛；同时，它在概率意义上等价于最大似然估计（MLE），符合统计学习的一致性。
+
+\subsubsection{经验风险最小化 (ERM) 的实现}
+
+根据第 2 节的推导，我们的目标是最小化期望风险 $R(f) = \mathbb{E}[L(f(X), Y)]$。然而，由于联合分布 $\mathcal{D}$ 未知，在实际训练中，我们通过最小化训练集 $\mathcal{S} = \{(x_i, y_i)\}_{i=1}^n$ 上的经验风险 $\hat{R}_n(f)$ 来逼近这一目标：
+\begin{equation}
+    \min_{\theta} \hat{R}_n(f_\theta) = \min_{\theta} \frac{1}{n} \sum_{i=1}^n L(f_\theta(x_i), y_i)
+\end{equation}
+在代码实现中，这一过程通过以下方式体现：
+\begin{itemize}
+    \item \textbf{前向传播}：计算 Mini-batch 内样本的平均交叉熵损失，作为经验风险 $\hat{R}_n$ 的无偏估计。
+    \item \textbf{反向传播}：利用链式法则计算 $\nabla_\theta \hat{R}_n$，并使用 Adam 优化器更新参数 $\theta$。
+\end{itemize}
+尽管第 2.2 节理论推导中假设优化误差为 0，但神经网络的损失曲面是非凸的。为了防止模型陷入局部极小值并控制泛化误差中的“估计误差”项，我们在实现中引入了 \texttt{Dropout} 正则化和学习率衰减策略，以此在降低经验风险的同时，约束假设空间的复杂度，防止过拟合。
+
+\subsection{损失函数的概率解释与梯度推导}
+
+\subsubsection{最大似然估计与交叉熵的等价性}
+
+在统计学习框架下，我们的神经网络 $f_\theta$ 实际上在拟合条件概率分布 $P(Y|X)$。假设训练样本独立同分布（i.i.d.），对于数据集 $\mathcal{D} = \{(x_i, y_i)\}_{i=1}^n$，参数 $\theta$ 的最大似然估计（MLE）目标为最大化对数似然函数：
+\begin{equation}
+    \theta_{MLE} = \arg\max_{\theta} \sum_{i=1}^n \log P(y_i | x_i; \theta)
+\end{equation}
+在多分类任务中，模型输出的概率分布由 Softmax 函数给出，即 $P(Y=k|x) = \hat{y}_k$。对于单样本 $(x, y)$，其中 $y$ 为 One-hot 标签向量，似然项为 $\prod_{k=1}^K \hat{y}_k^{y_k}$。取负对数后，最小化负对数似然等价于最小化交叉熵损失：
+\begin{equation}
+    -\log \mathcal{L}(\theta) = -\sum_{i=1}^n \sum_{k=1}^K y_{i,k} \log(\hat{y}_{i,k}) = \sum_{i=1}^n L(\hat{y}_i, y_i)
+\end{equation}
+这从概率论角度严格证明了为何在 ERM 框架下选择交叉熵作为损失函数。
+
+\subsubsection{Softmax-CrossEntropy 的梯度解析推导}
+为了深入理解模型，我们推导损失函数 $L$ 关于神经网络输出层 Logits $z$ 的梯度。这是反向传播算法起点的核心推导。
+
+设 logits 向量为 $z = (z_1, \dots, z_K)^T$，经过 Softmax 得到 $\hat{y}_k = \frac{e^{z_k}}{\sum_{j} e^{z_j}}$。损失函数为 $L = -\sum_{k} y_k \log \hat{y}_k$。
+利用链式法则，我们计算分量 $z_i$ 的偏导数 $\frac{\partial L}{\partial z_i}$：
+\begin{equation}
+    \frac{\partial L}{\partial z_i} = -\sum_{k=1}^K y_k \frac{\partial \log \hat{y}_k}{\partial z_i} = -\sum_{k=1}^K \frac{y_k}{\hat{y}_k} \frac{\partial \hat{y}_k}{\partial z_i}
+\end{equation}
+其中 Softmax 函数的雅可比矩阵元素 $\frac{\partial \hat{y}_k}{\partial z_i}$ 具有如下性质：
+\begin{equation}
+    \frac{\partial \hat{y}_k}{\partial z_i} = 
+    \begin{cases} 
+    \hat{y}_i (1 - \hat{y}_i) & \text{if } k = i \\
+    -\hat{y}_k \hat{y}_i & \text{if } k \neq i 
+    \end{cases}
+\end{equation}
+将其代入梯度公式：
+\begin{equation}
+\begin{aligned}
+    \frac{\partial L}{\partial z_i} &= - \frac{y_i}{\hat{y}_i} \hat{y}_i(1-\hat{y}_i) - \sum_{k \neq i} \frac{y_k}{\hat{y}_k} (-\hat{y}_k \hat{y}_i) \\
+    &= -y_i(1-\hat{y}_i) + \sum_{k \neq i} y_k \hat{y}_i \\
+    &= -y_i + y_i \hat{y}_i + \hat{y}_i \sum_{k \neq i} y_k \\
+    &= -y_i + \hat{y}_i \left( y_i + \sum_{k \neq i} y_k \right)
+\end{aligned}
+\end{equation}
+由于 $y$ 是 One-hot 向量，$\sum_{k} y_k = 1$，因此括号内各项之和为 1。最终我们得到一个非常优雅的结论：
+\begin{equation}
+    \frac{\partial L}{\partial z_i} = \hat{y}_i - y_i
+\end{equation}
+\textbf{物理意义}：损失函数关于 Logits 的梯度恰好是\textbf{预测概率与真实标签的差值}。这一线性形式保证了当预测误差较大时，梯度范数也较大，从而使参数更新具有很强的纠错能力，避免了使用均方误差（MSE）配合 Sigmoid/Softmax 时容易出现的梯度消失问题。这正是本项目采用该架构能实现 $O(n^{-rate})$ 收敛速率的关键数值基础。
 \newpage
 
 \section{实验设置与结果分析}
